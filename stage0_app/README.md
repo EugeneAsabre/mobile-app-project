@@ -1,16 +1,16 @@
 # stage0_app
 
-A new Flutter project.
+Links for the project
+https://github.com/EugeneAsabre/mobile-app-project - Github
+https://hng.tech/hire/flutter-developers - HNG flutter developers hire page
+https://hng.tech/hire/react-native-developers - HNG React developers hire page
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+CLoning
+-Install git
+-Open terminal or command prompt or the terminal in vscode
+-Navigate to the desired directory
+-clone the repository using the command git clone
+eg. git clone https://github.com/EugeneAsabre/mobile-app-project.git
+-Navigate into the project folder
+-run flutter pub get to get any dependencies and update any dependencies
+-use "flutter run" to run the app.

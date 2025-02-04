@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:stage1_app/decryptPage.dart';
+import 'package:stage1_app/encryptPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,7 +41,58 @@ class MyHomePage extends StatelessWidget {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [],
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _button(context, 'Encrypt Data', () => _encryptPage(context)),
+          SizedBox(height: 20.0),
+          _button(context, 'Decrypt Data', () => _decryptPage(context)),
+        ],
+      ),
+    );
+  }
+
+  void _encryptPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Encryptpage()),
+    );
+  }
+
+  void _decryptPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Decryptpage(),
+      ),
+    );
+  }
+
+  Widget _button(
+      BuildContext context, String buttonText, VoidCallback pageRoute) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: GestureDetector(
+          onTap: pageRoute,
+          child: Container(
+            height: MediaQuery.of(context).size.height * .2,
+            width: MediaQuery.of(context).size.width * .6,
+            decoration: BoxDecoration(
+              border: Border.all(
+                width: 1.0,
+              ),
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            child: Center(
+                child: Text(
+              buttonText,
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w600,
+              ),
+            )),
+          ),
+        ),
       ),
     );
   }

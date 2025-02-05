@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:stage1_app/decryptPage.dart';
-import 'package:stage1_app/encryptPage.dart';
+import 'package:stage1_app/decrypt_page.dart';
+import 'package:stage1_app/encrypt_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -54,7 +54,7 @@ class MyHomePage extends StatelessWidget {
   void _encryptPage(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Encryptpage()),
+      MaterialPageRoute(builder: (context) => EncryptPage()),
     );
   }
 
@@ -62,7 +62,7 @@ class MyHomePage extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Decryptpage(),
+        builder: (context) => DecryptPage(),
       ),
     );
   }

@@ -15,6 +15,7 @@ class _EncryptPageState extends State<EncryptPage> {
   final TextEditingController keyController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+//dispose the controllers to avoid any memory leak
   @override
   void dispose() {
     messageController.dispose();
@@ -29,6 +30,7 @@ class _EncryptPageState extends State<EncryptPage> {
         backgroundColor: Colors.blue,
       ),
       body: Form(
+        // Put the whole body in a form so i can do some validation
         key: _formKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -76,6 +78,7 @@ class _EncryptPageState extends State<EncryptPage> {
                     return 'Please enter a decryption key';
                   }
                   return null;
+                  // Making sure user inputs a key
                 },
               ),
             ),
@@ -92,9 +95,10 @@ class _EncryptPageState extends State<EncryptPage> {
                           title: Text('Encrypted Message'),
                           content: Text(
                             CustomEncryption.encrypt(messageController.text),
-                          ),
+                          ), //show the encrypted message in an alert Dialog
                           actions: [
                             TextButton(
+                              // Making user able to copy the encrypted message to the clipboard
                               child: Text('Copy'),
                               onPressed: () {
                                 DecryptionKeyStorage.decryptionKey =

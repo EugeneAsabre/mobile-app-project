@@ -1,21 +1,27 @@
 import 'dart:convert';
 
 class CustomEncryption {
-  // Substitution map (for demonstration purposes)
+  // Substitution map
   static final Map<int, int> _substitutionMap = {
-    65: 88, 66: 89, 67: 90, // A -> X, B -> Y, C -> Z
-    97: 120, 98: 121, 99: 122, // a -> x, b -> y, c -> z
-    // Add more mappings as needed
+    65: 88,
+    66: 89,
+    67: 90,
+    97: 120,
+    98: 121,
+    99: 122,
   };
 
   // Reverse substitution map
   static final Map<int, int> _reverseSubstitutionMap = {
-    88: 65, 89: 66, 90: 67, // X -> A, Y -> B, Z -> C
-    120: 97, 121: 98, 122: 99, // x -> a, y -> b, z -> c
-    // Add more mappings as needed
+    88: 65,
+    89: 66,
+    90: 67,
+    120: 97,
+    121: 98,
+    122: 99,
   };
 
-  // Shift value (for demonstration purposes)
+  // Shift value
   static const int _shiftValue = 5;
 
   // Encrypt function

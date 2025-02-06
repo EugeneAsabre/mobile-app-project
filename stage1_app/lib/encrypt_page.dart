@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import './encryption.dart';
 
 class EncryptPage extends StatefulWidget {
   const EncryptPage({super.key});
@@ -7,10 +9,17 @@ class EncryptPage extends StatefulWidget {
   State<EncryptPage> createState() => _EncryptPageState();
 }
 
-TextEditingController messageController = TextEditingController();
-TextEditingController keyController = TextEditingController();
-
 class _EncryptPageState extends State<EncryptPage> {
+  final TextEditingController messageController = TextEditingController();
+  final TextEditingController keyController = TextEditingController();
+
+  @override
+  void dispose() {
+    messageController.dispose();
+    keyController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,13 +70,28 @@ class _EncryptPageState extends State<EncryptPage> {
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: GestureDetector(
-            //will remove snackbar and use alert to display actual
-            //encryted message.
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Encryption started'),
-                ),
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Encrypted Message'),
+                    content: Text(
+                      CustomEncryption.encrypt(messageController.text),
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text('Copy'),
+                        onPressed: () {
+                          Clipboard.setData(ClipboardData(
+                              text: CustomEncryption.encrypt(
+                                  messageController.text)));
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
               );
             },
             child: Container(

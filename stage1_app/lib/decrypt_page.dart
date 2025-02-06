@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'encryption.dart';
+
 class DecryptPage extends StatefulWidget {
   const DecryptPage({super.key});
 
@@ -8,6 +10,16 @@ class DecryptPage extends StatefulWidget {
 }
 
 class _DecryptPageState extends State<DecryptPage> {
+  final TextEditingController messageController = TextEditingController();
+  final TextEditingController keyController = TextEditingController();
+
+  @override
+  void dispose() {
+    messageController.dispose();
+    keyController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,6 +34,7 @@ class _DecryptPageState extends State<DecryptPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
           child: TextFormField(
+            controller: messageController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Encryption Message',
@@ -38,6 +51,7 @@ class _DecryptPageState extends State<DecryptPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: TextFormField(
+            controller: keyController,
             obscureText: true,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
@@ -56,13 +70,25 @@ class _DecryptPageState extends State<DecryptPage> {
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: GestureDetector(
-            //will remove snackbar and use alert to display actual
-            //decrypted message.
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Decryption started'),
-                ),
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Decrypted Message'),
+                    content: Text(
+                      CustomEncryption.decrypt(messageController.text),
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text('OK'),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  );
+                },
               );
             },
             child: Container(

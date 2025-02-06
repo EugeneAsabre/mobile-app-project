@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
 import 'encryption.dart';
+import 'key_storage.dart';
 
 class DecryptPage extends StatefulWidget {
   const DecryptPage({super.key});
@@ -10,12 +11,15 @@ class DecryptPage extends StatefulWidget {
 }
 
 class _DecryptPageState extends State<DecryptPage> {
-  final TextEditingController messageController = TextEditingController();
+  final TextEditingController decryptedMessageController =
+      TextEditingController();
   final TextEditingController keyController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  String key = DecryptionKeyStorage.decryptionKey;
 
   @override
   void dispose() {
-    messageController.dispose();
+    decryptedMessageController.dispose();
     keyController.dispose();
     super.dispose();
   }
@@ -26,85 +30,126 @@ class _DecryptPageState extends State<DecryptPage> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
       ),
-      body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text(
-          'Message to be decrypted',
-          style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w600),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-          child: TextFormField(
-            controller: messageController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Encryption Message',
-              labelStyle: TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w300,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
+      body: Form(
+        key: _formKey,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Text(
+            'Message to be decrypted',
+            style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w600),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+            child: TextFormField(
+              controller: decryptedMessageController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Encryption Message',
+                labelStyle: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w300,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black),
+                ),
               ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: TextFormField(
-            controller: keyController,
-            obscureText: true,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Decryption Key',
-              labelStyle: TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w300,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: TextFormField(
+              controller: keyController,
+              obscureText: true,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Decryption Key',
+                labelStyle: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w300,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black),
+                ),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter the decryption key';
+                }
+                //
+                if (value != key) {
+                  return 'The decryption key is incorrect';
+                }
+                return null;
+              },
             ),
           ),
-        ),
-        SizedBox(height: 80.0),
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: GestureDetector(
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Decrypted Message'),
-                    content: Text(
-                      CustomEncryption.decrypt(messageController.text),
-                    ),
-                    actions: [
-                      TextButton(
-                        child: Text('OK'),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-            child: Container(
-              height: MediaQuery.of(context).size.height * .07,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: Colors.blue[100],
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Center(
-                child: Text('Decrypt'),
+          SizedBox(height: 80.0),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: GestureDetector(
+              onTap: () async {
+                if (_formKey.currentState?.validate() ?? false) {
+                  ClipboardData? clipboardData =
+                      await Clipboard.getData('text/plain');
+                  String clipboardText = clipboardData?.text ?? '';
+
+                  if (decryptedMessageController.text != clipboardText) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Error'),
+                          content: Text('Sorry Wrong message'),
+                          actions: [
+                            TextButton(
+                              child: Text('OK'),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Decrypted Message'),
+                          content: Text(
+                            CustomEncryption.decrypt(
+                                decryptedMessageController.text),
+                          ),
+                          actions: [
+                            TextButton(
+                              child: Text('OK'),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                }
+              },
+              child: Container(
+                height: MediaQuery.of(context).size.height * .07,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.blue[100],
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Text('Decrypt'),
+                ),
               ),
             ),
-          ),
-        )
-      ]),
+          )
+        ]),
+      ),
     );
   }
 }
